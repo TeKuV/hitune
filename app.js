@@ -686,7 +686,12 @@ function init() {
   if (!Headset.supported) {
     const msg = $('#connect-msg');
     msg.className = 'connect-msg';
-    msg.textContent = 'Ce navigateur ne gère pas le Bluetooth. Sur iPhone, ouvrez cette page dans Bluefy ; sur PC, dans Edge ou Chrome.';
+    const ios = /iPhone|iPad|iPod/.test(navigator.userAgent);
+    msg.textContent = ios && navigator.standalone
+      ? 'L’icône de l’écran d’accueil s’ouvre avec Safari, qui n’a pas le Bluetooth. Ouvrez l’app Bluefy et tapez l’adresse tekuv.github.io/hitune dedans.'
+      : ios
+        ? 'Safari et Chrome sur iPhone n’ont pas le Bluetooth. Ouvrez l’app Bluefy et tapez l’adresse tekuv.github.io/hitune dedans.'
+        : 'Ce navigateur ne gère pas le Bluetooth. Utilisez Edge ou Chrome.';
     $('#connect-btn').disabled = true;
   }
   $('#connect-btn').addEventListener('click', () => connect(false));
