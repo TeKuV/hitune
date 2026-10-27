@@ -449,7 +449,9 @@ function render(st) {
   value('name', st.name);
   const codecs = [...new Set(Object.values(st.codecs ?? {}))];
   value('codec', codecs.join(', ') || '-');
-  $('#status-line').textContent = ['Connecté', codecs[0], st.version && `firmware ${st.version.firmware}`].filter(Boolean).join(' · ');
+  $('#status-line').textContent = st.demo
+    ? 'Aperçu : aucun casque connecté'
+    : ['Connecté', codecs[0], st.version && `firmware ${st.version.firmware}`].filter(Boolean).join(' · ');
   renderDevices(st);
 }
 
@@ -575,7 +577,6 @@ async function connect(demo) {
     const st = await headset.connect({ demo });
     ui.connect.hidden = true;
     ui.app.hidden = false;
-    $('#demo-badge').hidden = !demo;
     noise.spring = null;
     render(st);
     msg.textContent = '';
@@ -620,7 +621,6 @@ function init() {
     sheet.layer.hidden = true;
     ui.app.hidden = true;
     ui.connect.hidden = false;
-    $('#demo-badge').hidden = true;
     if (!wasDemo) {
       toast('Casque déconnecté');
     }
