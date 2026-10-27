@@ -6,14 +6,8 @@ const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
 const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
 
 const EQ = ['Standard', 'Basses renforcées', 'Voix', 'Folk', 'Électro', 'Pop', 'Classique', 'Rock'];
-const GESTURES = [
-  [8, 'Contrôle du bruit'], [11, 'Son spatial'], [7, 'Mode jeu'], [6, 'Assistant vocal'], [1, 'Lecture et pause'], [0, 'Aucune action'],
-];
-const WEAR = [
-  [0, 'Désactivée', null],
-  [1, 'Pause de la musique', 'La musique s’arrête quand vous retirez le casque et reprend quand vous le remettez.'],
-  [2, 'Sans effet sur la musique', 'Le casque détecte le port sans toucher à la lecture.'],
-];
+// Actions que l'app UGREEN propose pour le bouton de controle du bruit des casques Max (generateANCCommandData).
+const GESTURES = [[8, 'Contrôle du bruit'], [11, 'Son spatial'], [7, 'Mode jeu'], [0, 'Aucune action']];
 const VOICE = [
   [1, 'Chinois', null],
   [0, 'Anglais', 'Muet sur ce firmware : aucune annonce ne sera jouée.'],
@@ -438,7 +432,6 @@ function render(st) {
     value('double', label(GESTURES, st.gestures.double));
     value('long', label(GESTURES, st.gestures.long));
   }
-  value('wear', label(WEAR, st.wear));
   value('voice', label(VOICE, st.voice));
   const tips = $('#tips');
   if (document.activeElement !== tips && st.tipsVolume) {
@@ -538,12 +531,6 @@ function bindSettings() {
       value: headset.state.voice,
       foot: 'Le casque ne contient pas de voix en français.',
       onPick: (v) => apply(() => headset.set('voice', v)),
-    }),
-    wear: () => ({
-      title: 'Détection du port',
-      options: WEAR,
-      value: headset.state.wear,
-      onPick: (v) => apply(() => headset.set('wear', v)),
     }),
     ...Object.fromEntries([['single', 'Un appui'], ['double', 'Deux appuis'], ['long', 'Appui long']].map(([key, title]) => [key, () => ({
       title,

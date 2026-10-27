@@ -16,7 +16,7 @@ One owner of a UGREEN HiTune Max6 headset, French speaker, who uses it with an i
 
 ## Product Purpose
 
-HiTune Max6 controls every setting the headset firmware exposes: noise cancellation and its level, equalizer, dual-device connection and the list of connected devices, voice prompts, prompt volume, game mode, high-quality decoding, spatial sound, wear detection, the ANC button gestures, plus battery, codec and firmware version. Success: the owner changes a setting in seconds from either device and sees the headset confirm it.
+HiTune Max6 controls every setting the headset firmware exposes: noise cancellation and its level, equalizer, dual-device connection and the list of connected devices, voice prompts, prompt volume, game mode, high-quality decoding, spatial sound, the ANC button gestures, plus battery, codec and firmware version. Success: the owner changes a setting in seconds from either device and sees the headset confirm it.
 
 ## Positioning
 
@@ -33,6 +33,7 @@ It talks to the headset directly with the protocol reverse-engineered from the U
 
 - Voice prompts: only English (0), Chinese (1), tones (2) exist in the protocol. On this firmware English is silent; French does not exist. Never promise French.
 - Prompt volume range 1 to 15.
+- No wear detection: the headset never answers command 19, and the UGREEN app hides it for the Max family. ANC button actions are limited to noise control, spatial sound, game mode or none.
 - Factory reset (cmd 14) clears pairings: destructive, needs confirmation.
 - Battery is a single value (over-ear headset), bit 7 = charging.
 - No OTA firmware updates: out of scope, risk of bricking.
