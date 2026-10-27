@@ -164,6 +164,7 @@ svg { fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round
 
 .connect-msg { min-height: 1.4em; margin: 0.875rem 0 0; color: var(--red); font-size: 0.9375rem; text-wrap: balance; }
 .connect-msg.is-info { color: var(--label-2); }
+.connect-detail { display: block; margin-top: 0.375rem; font-size: 0.75rem; color: var(--label-2); overflow-wrap: anywhere; }
 
 .connect-help {
   margin: 1.25rem 0 0;

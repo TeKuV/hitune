@@ -612,6 +612,30 @@ function bindTabs() {
 
 /* Connexion */
 
+/** Message selon l'etape qui a echoue ; vide quand l'utilisateur a ferme la liste lui-meme. */
+function connectError(e) {
+  if (e.step === 'choose' && /cancel/i.test(e.message)) {
+    return '';
+  }
+  switch (e.step) {
+    case 'adapter':
+      return 'Le Bluetooth de cet appareil est éteint ou indisponible. Activez-le, puis réessayez.';
+    case 'choose':
+      return e.name === 'SecurityError'
+        ? 'Le navigateur bloque le Bluetooth sur cette page. Autorisez-le dans les paramètres du site.'
+        : 'Le navigateur n’a pas pu chercher le casque. Vérifiez que le Bluetooth est activé.';
+    case 'gatt':
+      return 'Le casque a été trouvé mais refuse la connexion. Éteignez-le, rallumez-le, puis réessayez.';
+    case 'service':
+    case 'characteristic':
+      return 'Le casque est connecté mais ne propose pas le canal de réglages attendu.';
+    case 'notify':
+      return 'Le casque est connecté mais n’envoie pas ses réponses. Réessayez.';
+    default:
+      return e.message || 'La connexion a échoué. Réessayez.';
+  }
+}
+
 async function connect(demo) {
   const btn = $('#connect-btn');
   const msg = $('#connect-msg');
@@ -627,13 +651,14 @@ async function connect(demo) {
     msg.textContent = '';
   } catch (e) {
     msg.className = 'connect-msg';
-    if (e.name === 'NotFoundError' && /cancel/i.test(e.message)) {
-      msg.textContent = '';
-    } else if (e.name === 'NotFoundError') {
-      msg.textContent = 'Casque introuvable. Éteignez-le, rallumez-le, puis réessayez.';
-    } else {
-      msg.textContent = e.message || 'La connexion a échoué. Réessayez.';
+    msg.textContent = connectError(e);
+    if (msg.textContent && e.message) {
+      const detail = document.createElement('small');
+      detail.className = 'connect-detail';
+      detail.textContent = `${e.step ?? 'échange'} · ${e.name} : ${e.message}`;
+      msg.append(detail);
     }
+    console.warn('Connexion au casque', e.step, e);
     headset.disconnect();
   } finally {
     btn.disabled = false;

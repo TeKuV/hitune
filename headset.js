@@ -14,18 +14,29 @@ class BleLink {
   }
 
   async open() {
-    this.device = await navigator.bluetooth.requestDevice({
-      filters: [{ namePrefix: 'UGREEN' }],
+    const step = async (name, fn) => {
+      try {
+        return await fn();
+      } catch (e) {
+        e.step = name;
+        throw e;
+      }
+    };
+    if (!(await navigator.bluetooth.getAvailability?.() ?? true)) {
+      throw Object.assign(new Error('Bluetooth indisponible'), { name: 'AdapterError', step: 'adapter' });
+    }
+    this.device = await step('choose', () => navigator.bluetooth.requestDevice({
+      filters: [{ namePrefix: 'UGREEN' }, { services: ['0000ae30-0000-1000-8000-00805f9b34fb'] }],
       optionalServices: [SERVICE],
-    });
+    }));
     this.device.addEventListener('gattserverdisconnected', () => this.onClose());
-    const server = await this.device.gatt.connect();
-    const service = await server.getPrimaryService(SERVICE);
-    this.char = await service.getCharacteristic(CHARACTERISTIC);
+    const server = await step('gatt', () => this.device.gatt.connect());
+    const service = await step('service', () => server.getPrimaryService(SERVICE));
+    this.char = await step('characteristic', () => service.getCharacteristic(CHARACTERISTIC));
     this.char.addEventListener('characteristicvaluechanged', (e) => {
       this.onBytes(new Uint8Array(e.target.value.buffer));
     });
-    await this.char.startNotifications();
+    await step('notify', () => this.char.startNotifications());
     return this.device.name ?? 'UGREEN HiTune Max6';
   }
 
