@@ -1,5 +1,5 @@
 // Garde l'app et three.js en cache : l'app s'ouvre sans reseau, le Bluetooth n'en a pas besoin.
-const CACHE = 'hitune-v2';
+const CACHE = 'hitune-v3';
 const SHELL = ['./', 'index.html', 'styles.css', 'app.js', 'headset.js', 'protocol.js', 'model3d.js', 'manifest.webmanifest', 'icons/icon.svg', 'icons/icon-180.png'];
 
 self.addEventListener('install', (e) => {

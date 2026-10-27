@@ -565,6 +565,51 @@ function bindSettings() {
   $('#disconnect-btn').addEventListener('click', () => headset.disconnect());
 }
 
+/* Onglets : un panneau a la fois, garde dans l'adresse (#son, #connexion...) */
+
+const TABS = ['casque', 'son', 'connexion', 'reglages'];
+
+function showTab(name, { focus = false } = {}) {
+  const tab = TABS.includes(name) ? name : 'casque';
+  for (const b of $$('.tab')) {
+    const on = b.dataset.tab === tab;
+    b.setAttribute('aria-selected', String(on));
+    b.tabIndex = on ? 0 : -1;
+    if (on && focus) {
+      b.focus();
+    }
+  }
+  for (const p of $$('[data-panel]')) {
+    p.hidden = p.dataset.panel !== tab;
+  }
+  const panel = $(`[data-panel="${tab}"]`);
+  const title = $('.large-title', panel);
+  $('.navbar-title').textContent = tab === 'casque' ? 'HiTune Max6' : title.textContent;
+  titleWatch.disconnect();
+  titleWatch.observe(title);
+  window.scrollTo(0, 0);
+  history.replaceState(null, '', tab === 'casque' ? location.pathname + location.search : `#${tab}`);
+}
+
+const titleWatch = new IntersectionObserver(([entry]) => {
+  ui.app.classList.toggle('is-scrolled', !entry.isIntersecting);
+}, { rootMargin: '-44px 0px 0px 0px' });
+
+function bindTabs() {
+  const tabs = $$('.tab');
+  tabs.forEach((b) => b.addEventListener('click', () => showTab(b.dataset.tab)));
+  $('.tabbar').addEventListener('keydown', (e) => {
+    const i = tabs.indexOf(document.activeElement);
+    const step = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }[e.key];
+    if (i < 0 || !step) {
+      return;
+    }
+    e.preventDefault();
+    showTab(tabs[(i + step + tabs.length) % tabs.length].dataset.tab, { focus: true });
+  });
+  showTab(location.hash.slice(1));
+}
+
 /* Connexion */
 
 async function connect(demo) {
@@ -635,10 +680,7 @@ function init() {
   $('#connect-btn').addEventListener('click', () => connect(false));
   $('#demo-btn').addEventListener('click', () => connect(true));
 
-  const title = $('#title');
-  new IntersectionObserver(([entry]) => {
-    ui.app.classList.toggle('is-scrolled', !entry.isIntersecting);
-  }, { rootMargin: '-44px 0px 0px 0px' }).observe(title);
+  bindTabs();
 
   if ('serviceWorker' in navigator && location.protocol === 'https:') {
     navigator.serviceWorker.register('sw.js');

@@ -177,6 +177,9 @@ export function mountHeadphones(container) {
   const resize = () => {
     const w = container.clientWidth;
     const h = container.clientHeight;
+    if (!w || !h) {
+      return;
+    }
     renderer.setSize(w, h, false);
     camera.aspect = w / h;
     camera.updateProjectionMatrix();

@@ -60,6 +60,7 @@
     <symbol id="i-tap1" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2" fill="currentColor"/><circle cx="12" cy="12" r="7.5"/></symbol>
     <symbol id="i-tap2" viewBox="0 0 24 24"><circle cx="7.5" cy="12" r="3" fill="currentColor"/><circle cx="16.5" cy="12" r="3" fill="currentColor"/></symbol>
     <symbol id="i-hold" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2" fill="currentColor"/><path d="M12 3.5a8.5 8.5 0 1 1-8.5 8.5"/><path d="M3.5 8.5v3.5H7"/></symbol>
+    <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.8v2.4M12 18.8v2.4M2.8 12h2.4M18.8 12h2.4M5.5 5.5l1.7 1.7M16.8 16.8l1.7 1.7M5.5 18.5l1.7-1.7M16.8 7.2l1.7-1.7"/><circle cx="12" cy="12" r="6.6"/></symbol>
     <symbol id="i-chevron" viewBox="0 0 10 16"><path d="M2 2l6 6-6 6"/></symbol>
     <symbol id="i-check" viewBox="0 0 16 16"><path d="M2.5 8.5l3.5 3.5 7.5-8"/></symbol>
     <symbol id="i-bolt" viewBox="0 0 10 16"><path d="M6 0L0 9h4l-1 7 7-10H6z" fill="currentColor" stroke="none"/></symbol>
@@ -85,8 +86,15 @@
       <button id="disconnect-btn" class="navbar-action" type="button">Déconnecter</button>
     </header>
 
-    <div class="layout">
-      <section class="hero" aria-labelledby="title">
+    <nav class="tabbar" role="tablist" aria-label="Sections">
+      <button type="button" role="tab" class="tab" data-tab="casque" aria-controls="tab-casque"><svg viewBox="0 0 28 28"><use href="#i-anc-off"/></svg><span>Casque</span></button>
+      <button type="button" role="tab" class="tab" data-tab="son" aria-controls="tab-son"><svg viewBox="0 0 24 24"><use href="#i-eq"/></svg><span>Son</span></button>
+      <button type="button" role="tab" class="tab" data-tab="connexion" aria-controls="tab-connexion"><svg viewBox="0 0 24 24"><use href="#i-link"/></svg><span>Connexion</span></button>
+      <button type="button" role="tab" class="tab" data-tab="reglages" aria-controls="tab-reglages"><svg viewBox="0 0 24 24"><use href="#i-gear"/></svg><span>Réglages</span></button>
+    </nav>
+
+    <main class="layout">
+      <section class="panel hero" id="tab-casque" data-panel="casque" role="tabpanel" aria-labelledby="title">
         <h1 id="title" class="large-title">HiTune Max6</h1>
         <p class="hero-status"><span id="status-line">Connecté</span></p>
         <div class="stage hero-stage" data-stage><svg class="hp" role="img" aria-label="Casque HiTune Max6"><use href="#headphones"/></svg></div>
@@ -109,11 +117,21 @@
             <button type="button" role="radio" data-level="10">Forte</button>
           </div>
         </div>
+
+        <div class="group">
+          <h2 class="group-head">Informations</h2>
+          <div class="cells">
+            <div class="cell cell-plain"><span class="cell-label">Nom</span><span class="cell-value" data-value="name"></span></div>
+            <div class="cell cell-plain"><span class="cell-label">Firmware</span><span class="cell-value" data-value="firmware"></span></div>
+            <div class="cell cell-plain"><span class="cell-label">Codec</span><span class="cell-value" data-value="codec"></span></div>
+          </div>
+        </div>
       </section>
 
-      <section class="lists">
+      <section class="panel" id="tab-son" data-panel="son" role="tabpanel" aria-labelledby="title-son" hidden>
+        <h1 id="title-son" class="large-title">Son</h1>
         <div class="group">
-          <h2 class="group-head">Son</h2>
+          <h2 class="group-head">Rendu</h2>
           <div class="cells">
             <button class="cell" type="button" data-picker="eq"><span class="tile tile-pink"><svg><use href="#i-eq"/></svg></span><span class="cell-label">Égaliseur</span><span class="cell-value" data-value="eq"></span><svg class="chev"><use href="#i-chevron"/></svg></button>
             <label class="cell"><span class="tile tile-blue"><svg><use href="#i-spatial"/></svg></span><span class="cell-label">Son spatial</span><input class="switch" type="checkbox" role="switch" data-switch="space"></label>
@@ -123,8 +141,12 @@
           <p class="group-foot">Le mode jeu réduit la latence. La haute qualité utilise LDAC quand l'appareil le gère, et coupe souvent la connexion à deux appareils.</p>
         </div>
 
+      </section>
+
+      <section class="panel" id="tab-connexion" data-panel="connexion" role="tabpanel" aria-labelledby="title-connexion" hidden>
+        <h1 id="title-connexion" class="large-title">Connexion</h1>
         <div class="group">
-          <h2 class="group-head">Connexion</h2>
+          <h2 class="group-head">Appareils</h2>
           <div class="cells">
             <label class="cell"><span class="tile tile-sky"><svg><use href="#i-link"/></svg></span><span class="cell-label">Deux appareils à la fois</span><input class="switch" type="checkbox" role="switch" data-switch="dual"></label>
             <div id="devices"></div>
@@ -132,6 +154,10 @@
           <p class="group-foot" id="dual-foot">Le casque reste connecté au PC et à l'iPhone, et joue le son de celui qui en émet.</p>
         </div>
 
+      </section>
+
+      <section class="panel" id="tab-reglages" data-panel="reglages" role="tabpanel" aria-labelledby="title-reglages" hidden>
+        <h1 id="title-reglages" class="large-title">Réglages</h1>
         <div class="group">
           <h2 class="group-head">Commandes</h2>
           <div class="cells">
@@ -164,22 +190,13 @@
         </div>
 
         <div class="group">
-          <h2 class="group-head">Informations</h2>
-          <div class="cells">
-            <div class="cell cell-plain"><span class="cell-label">Firmware</span><span class="cell-value" data-value="firmware"></span></div>
-            <div class="cell cell-plain"><span class="cell-label">Codec</span><span class="cell-value" data-value="codec"></span></div>
-            <div class="cell cell-plain"><span class="cell-label">Nom</span><span class="cell-value" data-value="name"></span></div>
-          </div>
-        </div>
-
-        <div class="group">
           <div class="cells">
             <button id="reset-btn" class="cell cell-danger" type="button">Réinitialiser le casque</button>
           </div>
           <p class="group-foot">Remet les réglages d'usine et efface les appairages.</p>
         </div>
       </section>
-    </div>
+    </main>
   </div>
 
   <div class="sheet-layer" id="sheet-layer" hidden>
